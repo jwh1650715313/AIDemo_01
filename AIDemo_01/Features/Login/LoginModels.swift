@@ -22,6 +22,7 @@ struct LoginViewState {
     var isLoading: Bool = false
     var errorMessage: String?
 
+    
     var isLoginButtonEnabled: Bool {
         !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !password.isEmpty && !isLoading
     }
