@@ -1,4 +1,5 @@
 import UIKit
+import SnapKit
 
 // 登录页纯视图。
 // 它只关心怎么把页面画出来，不关心账号密码是否正确。
@@ -28,7 +29,6 @@ final class LoginView: UIView {
 
     private let logoContainer: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor(red: 0.43, green: 0.35, blue: 0.96, alpha: 1.0)
         view.layer.cornerRadius = 18
         return view
@@ -36,7 +36,6 @@ final class LoginView: UIView {
 
     private let logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "person.crop.circle.fill.badge.checkmark"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .white
         return imageView
@@ -44,8 +43,7 @@ final class LoginView: UIView {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Welcome back"
+        label.text = "欢迎回来"
         label.font = .systemFont(ofSize: 30, weight: .bold)
         label.textAlignment = .center
         label.textColor = UIColor(red: 0.11, green: 0.12, blue: 0.16, alpha: 1.0)
@@ -54,8 +52,7 @@ final class LoginView: UIView {
 
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Sign in to continue your journey."
+        label.text = "登录后继续你的智能旅程"
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.textAlignment = .center
         label.textColor = UIColor(red: 0.49, green: 0.52, blue: 0.58, alpha: 1.0)
@@ -67,8 +64,7 @@ final class LoginView: UIView {
 
     private let dividerLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "or"
+        label.text = "或"
         label.font = .systemFont(ofSize: 13, weight: .medium)
         label.textColor = UIColor(red: 0.63, green: 0.66, blue: 0.72, alpha: 1.0)
         return label
@@ -76,8 +72,7 @@ final class LoginView: UIView {
 
     private let footerLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        let fullText = "Don't have an account? Sign up"
+        let fullText = "还没有账号？立即注册"
         let attributed = NSMutableAttributedString(
             string: fullText,
             attributes: [
@@ -90,7 +85,7 @@ final class LoginView: UIView {
                 .foregroundColor: UIColor(red: 0.19, green: 0.47, blue: 0.98, alpha: 1.0),
                 .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
             ],
-            range: (fullText as NSString).range(of: "Sign up")
+            range: (fullText as NSString).range(of: "立即注册")
         )
         label.attributedText = attributed
         label.textAlignment = .center
@@ -127,30 +122,25 @@ final class LoginView: UIView {
 
         loginButton.isEnabled = state.isLoginButtonEnabled
         loginButton.alpha = state.isLoginButtonEnabled ? 1.0 : 0.75
-        loginButton.setTitle(state.isLoading ? "Signing In..." : "Sign In", for: .normal)
+        loginButton.setTitle(state.isLoading ? "登录中..." : "登录", for: .normal)
     }
 
     private func configureView() {
         backgroundColor = UIColor(red: 0.98, green: 0.99, blue: 1.0, alpha: 1.0)
 
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.keyboardDismissMode = .interactive
-
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundTopGlow.translatesAutoresizingMaskIntoConstraints = false
-        backgroundBottomGlow.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func configureFields() {
         // 输入框的基础行为都放在视图层配置。
-        emailField.placeholder = "Email"
-        emailField.keyboardType = .emailAddress
-        emailField.textContentType = .username
+        emailField.placeholder = "手机号"
+        emailField.keyboardType = .numberPad
+        emailField.textContentType = .telephoneNumber
         emailField.autocorrectionType = .no
         emailField.autocapitalizationType = .none
 
-        passwordField.placeholder = "Password"
+        passwordField.placeholder = "密码"
         passwordField.textContentType = .password
         passwordField.isSecureTextEntry = true
         passwordField.returnKeyType = .done
@@ -158,8 +148,7 @@ final class LoginView: UIView {
 
     private func configureButtons() {
         // 按钮的样式也在视图层统一管理，避免控制器里堆 UI 代码。
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.setTitle("Sign In", for: .normal)
+        loginButton.setTitle("登录", for: .normal)
         loginButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.backgroundColor = UIColor(red: 0.19, green: 0.47, blue: 0.98, alpha: 1.0)
@@ -169,17 +158,15 @@ final class LoginView: UIView {
         loginButton.layer.shadowRadius = 18
         loginButton.layer.shadowOffset = CGSize(width: 0, height: 10)
 
-        appleButton.translatesAutoresizingMaskIntoConstraints = false
-        appleButton.setTitle("  Continue with Apple", for: .normal)
-        appleButton.setImage(UIImage(systemName: "applelogo"), for: .normal)
+        appleButton.setTitle("  微信登录", for: .normal)
+        appleButton.setImage(UIImage(systemName: "message.fill"), for: .normal)
         appleButton.tintColor = .white
         appleButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         appleButton.setTitleColor(.white, for: .normal)
         appleButton.backgroundColor = UIColor(red: 0.08, green: 0.09, blue: 0.12, alpha: 1.0)
         appleButton.layer.cornerRadius = 16
 
-        forgotButton.translatesAutoresizingMaskIntoConstraints = false
-        forgotButton.setTitle("Forgot password?", for: .normal)
+        forgotButton.setTitle("忘记密码？", for: .normal)
         forgotButton.setTitleColor(UIColor(red: 0.19, green: 0.47, blue: 0.98, alpha: 1.0), for: .normal)
         forgotButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
     }
@@ -188,18 +175,15 @@ final class LoginView: UIView {
         // 这里把页面拆成几个小的 stack，后面你读布局时会更清晰：
         // header / fields / divider / footer
         let headerStack = UIStackView(arrangedSubviews: [logoContainer, titleLabel, subtitleLabel])
-        headerStack.translatesAutoresizingMaskIntoConstraints = false
         headerStack.axis = .vertical
         headerStack.alignment = .center
         headerStack.spacing = 16
 
         let fieldStack = UIStackView(arrangedSubviews: [emailField, passwordField])
-        fieldStack.translatesAutoresizingMaskIntoConstraints = false
         fieldStack.axis = .vertical
         fieldStack.spacing = 12
 
         let dividerStack = UIStackView(arrangedSubviews: [dividerLineLeft, dividerLabel, dividerLineRight])
-        dividerStack.translatesAutoresizingMaskIntoConstraints = false
         dividerStack.axis = .horizontal
         dividerStack.alignment = .center
         dividerStack.spacing = 12
@@ -213,7 +197,6 @@ final class LoginView: UIView {
             appleButton,
             footerLabel
         ])
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
         contentStack.axis = .vertical
         contentStack.spacing = 18
 
@@ -224,47 +207,68 @@ final class LoginView: UIView {
         contentView.addSubview(contentStack)
         logoContainer.addSubview(logoImageView)
 
-        NSLayoutConstraint.activate([
-            backgroundTopGlow.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 28),
-            backgroundTopGlow.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -76),
-            backgroundTopGlow.widthAnchor.constraint(equalToConstant: 280),
-            backgroundTopGlow.heightAnchor.constraint(equalToConstant: 180),
+        backgroundTopGlow.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide).offset(28)
+            make.centerX.equalToSuperview().offset(-76)
+            make.width.equalTo(280)
+            make.height.equalTo(180)
+        }
 
-            backgroundBottomGlow.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -36),
-            backgroundBottomGlow.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 94),
-            backgroundBottomGlow.widthAnchor.constraint(equalToConstant: 240),
-            backgroundBottomGlow.heightAnchor.constraint(equalToConstant: 150),
+        backgroundBottomGlow.snp.makeConstraints { make in
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-36)
+            make.centerX.equalToSuperview().offset(94)
+            make.width.equalTo(240)
+            make.height.equalTo(150)
+        }
 
-            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
 
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.frameLayoutGuide)
+            make.height.greaterThanOrEqualTo(scrollView.frameLayoutGuide)
+        }
 
-            contentStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
-            contentStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
-            contentStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 8),
+        contentStack.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(32)
+            make.centerY.equalToSuperview().offset(8)
+        }
 
-            logoContainer.widthAnchor.constraint(equalToConstant: 68),
-            logoContainer.heightAnchor.constraint(equalToConstant: 68),
-            logoImageView.centerXAnchor.constraint(equalTo: logoContainer.centerXAnchor),
-            logoImageView.centerYAnchor.constraint(equalTo: logoContainer.centerYAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: 30),
-            logoImageView.heightAnchor.constraint(equalToConstant: 30),
+        logoContainer.snp.makeConstraints { make in
+            make.size.equalTo(68)
+        }
 
-            emailField.heightAnchor.constraint(equalToConstant: 54),
-            passwordField.heightAnchor.constraint(equalToConstant: 54),
-            loginButton.heightAnchor.constraint(equalToConstant: 54),
-            appleButton.heightAnchor.constraint(equalToConstant: 54),
-            dividerLineLeft.heightAnchor.constraint(equalToConstant: 1),
-            dividerLineRight.heightAnchor.constraint(equalToConstant: 1)
-        ])
+        logoImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(30)
+        }
+
+        emailField.snp.makeConstraints { make in
+            make.height.equalTo(54)
+        }
+
+        passwordField.snp.makeConstraints { make in
+            make.height.equalTo(54)
+        }
+
+        loginButton.snp.makeConstraints { make in
+            make.height.equalTo(54)
+        }
+
+        appleButton.snp.makeConstraints { make in
+            make.height.equalTo(54)
+        }
+
+        dividerLineLeft.snp.makeConstraints { make in
+            make.height.equalTo(1)
+        }
+
+        dividerLineRight.snp.makeConstraints { make in
+            make.height.equalTo(1)
+        }
 
         dividerLineLeft.setContentHuggingPriority(.defaultLow, for: .horizontal)
         dividerLineRight.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -284,7 +288,6 @@ final class LoginView: UIView {
 final class InsetTextField: UITextField {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = UIColor(red: 0.96, green: 0.97, blue: 0.99, alpha: 1.0)
         textColor = UIColor(red: 0.13, green: 0.14, blue: 0.19, alpha: 1.0)
         tintColor = UIColor(red: 0.19, green: 0.47, blue: 0.98, alpha: 1.0)
@@ -363,7 +366,6 @@ private final class GlowView: UIView {
 private final class DividerLineView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = UIColor(red: 0.89, green: 0.91, blue: 0.95, alpha: 1.0)
     }
 

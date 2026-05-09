@@ -15,11 +15,11 @@ final class LoginUseCase {
     }
 
     func execute(email: String, password: String) async throws -> UserSession {
-        // 先清掉邮箱两端空格，避免用户复制账号时多带了空格。
-        let normalizedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        // UI 已改为手机号登录。这里暂时沿用 email 参数名，避免扩大改动范围。
+        let normalizedPhone = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        guard normalizedEmail.contains("@"), normalizedEmail.contains(".") else {
-            throw LoginError.invalidEmail
+        guard normalizedPhone.range(of: #"^1\d{10}$"#, options: .regularExpression) != nil else {
+            throw LoginError.invalidPhone
         }
 
         guard password.count >= 6 else {
@@ -27,6 +27,6 @@ final class LoginUseCase {
         }
 
         // 真正执行登录。
-        return try await repository.login(email: normalizedEmail, password: password)
+        return try await repository.login(email: normalizedPhone, password: password)
     }
 }

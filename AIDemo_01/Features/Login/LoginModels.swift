@@ -22,7 +22,6 @@ struct LoginViewState {
     var isLoading: Bool = false
     var errorMessage: String?
 
-    
     var isLoginButtonEnabled: Bool {
         !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !password.isEmpty && !isLoading
     }
@@ -30,18 +29,18 @@ struct LoginViewState {
 
 // 登录过程中可能出现的业务错误。
 enum LoginError: LocalizedError {
-    case invalidEmail
+    case invalidPhone
     case invalidPassword
     case invalidCredentials
 
     var errorDescription: String? {
         switch self {
-        case .invalidEmail:
-            return "请输入有效的邮箱地址。"
+        case .invalidPhone:
+            return "请输入有效的手机号。"
         case .invalidPassword:
             return "密码至少需要 6 位。"
         case .invalidCredentials:
-            return "账号或密码错误，请使用指定测试账号登录。"
+            return "手机号或密码错误，请使用指定测试账号登录。"
         }
     }
 }
