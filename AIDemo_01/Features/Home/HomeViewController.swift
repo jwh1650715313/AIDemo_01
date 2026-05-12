@@ -19,7 +19,7 @@ final class HomeViewController: UIViewController {
         title = "首页"
         view.backgroundColor = .systemBackground
         configureLayout()
-        runOpenAIChatDemo()
+        runQwenChatDemo()
     }
 
     private func configureLayout() {
@@ -52,54 +52,66 @@ final class HomeViewController: UIViewController {
         ])
     }
 
-    private func runOpenAIChatDemo() {
+    private func runQwenChatDemo() {
         Task {
-            let question = "用一句中文介绍一下你自己。"
+            let question = "用一句中文介绍一下你自己。 来一首诗"
 
             do {
-                let answer = try await requestOpenAIAnswer(question: question)
-                print("OpenAI 问：\(question)")
-                print("OpenAI 答：\(answer)")
+                let answer = try await requestQwenAnswer(question: question)
+                print("千问 问：\(question)")
+                print("千问 答：\(answer)")
             } catch {
-                print("OpenAI 请求失败：\(error.localizedDescription)")
+                print("千问请求失败：\(error.localizedDescription)")
             }
         }
     }
 
-    private func requestOpenAIAnswer(question: String) async throws -> String {
-        guard let apiKey = OpenAIConfiguration.apiKey else {
-            throw OpenAIChatError.missingAPIKey
+    private func requestQwenAnswer(question: String) async throws -> String {
+        guard let apiKey = QwenConfiguration.apiKey else {
+            throw QwenChatError.missingAPIKey
         }
 
-        let url = URL(string: "https://api.openai.com/v1/responses")!
+        let url = URL(string: QwenConfiguration.chatCompletionsURL)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: [
-            "model": "gpt-4.1-mini",
-            "input": question
+            "model": QwenConfiguration.model,
+            "messages": [
+                [
+                    "role": "system",
+                    "content": "你是一个友好、简洁的中文助手。"
+                ],
+                [
+                    "role": "user",
+                    "content": question
+                ]
+            ]
         ])
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw OpenAIChatError.invalidResponse
+            throw QwenChatError.invalidResponse
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
             let message = String(data: data, encoding: .utf8) ?? "HTTP \(httpResponse.statusCode)"
-            throw OpenAIChatError.requestFailed(message)
+            throw QwenChatError.requestFailed(message)
         }
 
-        return try OpenAIResponseParser.answerText(from: data)
+        return try QwenResponseParser.answerText(from: data)
     }
 }
 
-private enum OpenAIConfiguration {
+private enum QwenConfiguration {
+    static let chatCompletionsURL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    static let model = "qwen-plus"
+
     static var apiKey: String? {
-        let infoValue = Bundle.main.object(forInfoDictionaryKey: "OPENAI_API_KEY") as? String
-        let environmentValue = ProcessInfo.processInfo.environment["OPENAI_API_KEY"]
+        let infoValue = Bundle.main.object(forInfoDictionaryKey: "DASHSCOPE_API_KEY") as? String
+        let environmentValue = ProcessInfo.processInfo.environment["DASHSCOPE_API_KEY"]
 
         return [infoValue, environmentValue]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -107,39 +119,32 @@ private enum OpenAIConfiguration {
     }
 }
 
-private enum OpenAIResponseParser {
+private enum QwenResponseParser {
     static func answerText(from data: Data) throws -> String {
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
 
-        if let outputText = json?["output_text"] as? String, !outputText.isEmpty {
-            return outputText
+        guard let choices = json?["choices"] as? [[String: Any]] else {
+            throw QwenChatError.missingAnswer
         }
 
-        guard let output = json?["output"] as? [[String: Any]] else {
-            throw OpenAIChatError.missingAnswer
-        }
-
-        let textParts = output
-            .compactMap { $0["content"] as? [[String: Any]] }
-            .flatMap { $0 }
-            .compactMap { content -> String? in
-                guard content["type"] as? String == "output_text" else {
-                    return nil
-                }
-                return content["text"] as? String
+        let textParts = choices.compactMap { choice -> String? in
+            guard let message = choice["message"] as? [String: Any] else {
+                return nil
             }
+            return message["content"] as? String
+        }
 
         let answer = textParts.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !answer.isEmpty else {
-            throw OpenAIChatError.missingAnswer
+            throw QwenChatError.missingAnswer
         }
 
         return answer
     }
 }
 
-private enum OpenAIChatError: LocalizedError {
+private enum QwenChatError: LocalizedError {
     case missingAPIKey
     case invalidResponse
     case missingAnswer
@@ -148,7 +153,7 @@ private enum OpenAIChatError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingAPIKey:
-            return "没有找到 OPENAI_API_KEY，请在 Xcode Scheme 的环境变量或 Info.plist 对应配置里设置。"
+            return "没有找到 DASHSCOPE_API_KEY，请在 Xcode Scheme 的环境变量或 Info.plist 对应配置里设置。"
         case .invalidResponse:
             return "服务端响应格式无效。"
         case .missingAnswer:

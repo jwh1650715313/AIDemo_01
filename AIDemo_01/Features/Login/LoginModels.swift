@@ -5,6 +5,13 @@ import Foundation
 struct UserSession: Codable {
     let email: String
     let welcomeMessage: String
+    let token: String?
+
+    init(email: String, welcomeMessage: String, token: String? = nil) {
+        self.email = email
+        self.welcomeMessage = welcomeMessage
+        self.token = token
+    }
 }
 
 // 登录页可能抛出的路由事件。
@@ -40,7 +47,7 @@ enum LoginError: LocalizedError {
         case .invalidPassword:
             return "密码至少需要 6 位。"
         case .invalidCredentials:
-            return "手机号或密码错误，请使用指定测试账号登录。"
+            return "手机号或密码错误。"
         }
     }
 }

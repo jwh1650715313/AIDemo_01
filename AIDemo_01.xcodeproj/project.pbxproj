@@ -29,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2CABC0012FB0A00000000001 /* AIDemo_01/Config/AppDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AIDemo_01/Config/AppDebug.xcconfig; sourceTree = "<group>"; };
+		2CABC0022FB0A00000000001 /* AIDemo_01/Config/AppRelease.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AIDemo_01/Config/AppRelease.xcconfig; sourceTree = "<group>"; };
 		2CD06E122F972CF30013771C /* AIDemo_01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIDemo_01.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD06E282F972CF50013771C /* AIDemo_01Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIDemo_01Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD06E322F972CF50013771C /* AIDemo_01UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIDemo_01UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +101,8 @@
 		2CD06E092F972CF30013771C = {
 			isa = PBXGroup;
 			children = (
+				2CABC0012FB0A00000000001 /* AIDemo_01/Config/AppDebug.xcconfig */,
+				2CABC0022FB0A00000000001 /* AIDemo_01/Config/AppRelease.xcconfig */,
 				2CD06E142F972CF30013771C /* AIDemo_01 */,
 				2CD06E2B2F972CF50013771C /* AIDemo_01Tests */,
 				2CD06E352F972CF50013771C /* AIDemo_01UITests */,
@@ -301,6 +305,7 @@
 /* Begin XCBuildConfiguration section */
 		2CD06E3C2F972CF50013771C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2CABC0012FB0A00000000001 /* AIDemo_01/Config/AppDebug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -329,6 +334,7 @@
 		};
 		2CD06E3D2F972CF50013771C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2CABC0022FB0A00000000001 /* AIDemo_01/Config/AppRelease.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -7,3 +7,6 @@ xcuserdata/
 # Xcode build outputs
 DerivedData/
 build/
+
+# Local secrets
+AIDemo_01/Config/LocalSecrets.xcconfig

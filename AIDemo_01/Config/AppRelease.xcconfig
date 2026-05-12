@@ -1,0 +1,6 @@
+// LocalSecrets.xcconfig is intentionally ignored by git.
+// Put machine-local API keys there for local Release builds.
+#include? "LocalSecrets.xcconfig"
+
+DASHSCOPE_MODEL = qwen-plus
+DASHSCOPE_CHAT_COMPLETIONS_URL = https:/$()/dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
