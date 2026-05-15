@@ -123,7 +123,7 @@ final class ChatView: UIView {
 
         inputBar.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(66)
+            make.height.equalTo(68)
             make.bottom.equalTo(keyboardLayoutGuide.snp.top).offset(-12).priority(999)
             make.bottom.lessThanOrEqualTo(safeAreaLayoutGuide.snp.bottom).offset(-12)
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-12).priority(.low)

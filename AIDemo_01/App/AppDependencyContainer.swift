@@ -31,7 +31,7 @@ final class AppDependencyContainer {
     }
 
     private func makeChatService() -> ChatResponding {
-        QwenChatService()
+        DoubaoChatService()
     }
 
     func makeSessionStore() -> SessionStore {
@@ -44,7 +44,7 @@ final class AppDependencyContainer {
     ) -> UITabBarController {
         let controller = UITabBarController()
 
-        // 当前首页承载灵境 AI 聊天，真实回复由千问 API 提供。
+        // 当前首页承载灵境 AI 聊天，真实回复由豆包 API 提供。
         // “我的”页面继续拿到当前登录用户信息和退出登录回调。
         let chatViewController = ChatViewController(
             chatService: makeChatService(),

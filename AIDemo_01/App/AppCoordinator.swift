@@ -1,7 +1,7 @@
 import UIKit
 
 // 整个 App 的总导演。
-// 它只关心一件事：当前应该显示登录页，还是显示首页。
+// 它负责启动页、登录页和首页之间的页面流转。
 final class AppCoordinator {
     // window 是 iOS App 真正承载页面的根容器。
     private let window: UIWindow
@@ -25,14 +25,25 @@ final class AppCoordinator {
     }
     
     func start() {
-        // App 启动时先看本地有没有登录态。
-        // 有就直接进首页，没有就从登录页开始。
+        showSplash()
+        window.makeKeyAndVisible()
+    }
+
+    private func showSplash() {
+        let splashViewController = SplashViewController { [weak self] in
+            self?.showInitialScreen()
+        }
+        window.rootViewController = splashViewController
+    }
+
+    private func showInitialScreen() {
+        // Splash 结束后再看本地有没有登录态。
+        // 有就进首页，没有就从登录页开始。
         if let session = sessionStore.loadSession() {
             showHome(session: session)
         } else {
             showLogin()
         }
-        window.makeKeyAndVisible()
     }
 
     private func showLogin() {
@@ -50,7 +61,7 @@ final class AppCoordinator {
         loginCoordinator.start()
         self.loginCoordinator = loginCoordinator
 
-        window.rootViewController = navigationController
+        setRootViewController(navigationController)
     }
 
     private func showHome(session: UserSession) {
@@ -64,6 +75,22 @@ final class AppCoordinator {
             }
         )
         homeTabBarController.modalPresentationStyle = .fullScreen
-        window.rootViewController = homeTabBarController
+        loginCoordinator = nil
+        setRootViewController(homeTabBarController)
+    }
+
+    private func setRootViewController(_ viewController: UIViewController) {
+        guard window.rootViewController != nil else {
+            window.rootViewController = viewController
+            return
+        }
+
+        UIView.transition(
+            with: window,
+            duration: 0.35,
+            options: [.transitionCrossDissolve, .allowAnimatedContent]
+        ) {
+            self.window.rootViewController = viewController
+        }
     }
 }

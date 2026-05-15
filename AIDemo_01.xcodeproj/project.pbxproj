@@ -40,7 +40,12 @@
 		2CD06E3A2F972CF50013771C /* Exceptions for "AIDemo_01" folder in "AIDemo_01" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Config/AppDebug.xcconfig,
+				Config/AppRelease.xcconfig,
+				Config/LocalSecrets.xcconfig,
 				Info.plist,
+				PROJECT_FLOW.md,
+				README.md,
 			);
 			target = 2CD06E112F972CF30013771C /* AIDemo_01 */;
 		};
@@ -310,10 +315,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = NO;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YSQ382272D;
+				DEVELOPMENT_TEAM = 398GQ2R56M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AIDemo_01/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "灵境AI";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -326,7 +333,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gn.MyAppHelperDemo.AIDemo-01";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -339,10 +347,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = NO;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YSQ382272D;
+				DEVELOPMENT_TEAM = 398GQ2R56M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AIDemo_01/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "灵境AI";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -355,7 +365,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gn.MyAppHelperDemo.AIDemo-01";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -19,7 +19,7 @@ final class HomeViewController: UIViewController {
         title = "首页"
         view.backgroundColor = .systemBackground
         configureLayout()
-        runQwenChatDemo()
+        runDoubaoChatDemo()
     }
 
     private func configureLayout() {
@@ -52,32 +52,32 @@ final class HomeViewController: UIViewController {
         ])
     }
 
-    private func runQwenChatDemo() {
+    private func runDoubaoChatDemo() {
         Task {
             let question = "用一句中文介绍一下你自己。 来一首诗"
 
             do {
-                let answer = try await requestQwenAnswer(question: question)
-                print("千问 问：\(question)")
-                print("千问 答：\(answer)")
+                let answer = try await requestDoubaoAnswer(question: question)
+                print("豆包 问：\(question)")
+                print("豆包 答：\(answer)")
             } catch {
-                print("千问请求失败：\(error.localizedDescription)")
+                print("豆包请求失败：\(error.localizedDescription)")
             }
         }
     }
 
-    private func requestQwenAnswer(question: String) async throws -> String {
-        guard let apiKey = QwenConfiguration.apiKey else {
-            throw QwenChatError.missingAPIKey
+    private func requestDoubaoAnswer(question: String) async throws -> String {
+        guard let apiKey = DoubaoConfiguration.apiKey else {
+            throw DoubaoChatError.missingAPIKey
         }
 
-        let url = URL(string: QwenConfiguration.chatCompletionsURL)!
+        let url = URL(string: DoubaoConfiguration.chatCompletionsURL)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: [
-            "model": QwenConfiguration.model,
+            "model": DoubaoConfiguration.model,
             "messages": [
                 [
                     "role": "system",
@@ -93,25 +93,25 @@ final class HomeViewController: UIViewController {
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw QwenChatError.invalidResponse
+            throw DoubaoChatError.invalidResponse
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
             let message = String(data: data, encoding: .utf8) ?? "HTTP \(httpResponse.statusCode)"
-            throw QwenChatError.requestFailed(message)
+            throw DoubaoChatError.requestFailed(message)
         }
 
-        return try QwenResponseParser.answerText(from: data)
+        return try DoubaoResponseParser.answerText(from: data)
     }
 }
 
-private enum QwenConfiguration {
-    static let chatCompletionsURL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
-    static let model = "qwen-plus"
+private enum DoubaoConfiguration {
+    static let chatCompletionsURL = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
+    static let model = "doubao-seed-character-251128"
 
     static var apiKey: String? {
-        let infoValue = Bundle.main.object(forInfoDictionaryKey: "DASHSCOPE_API_KEY") as? String
-        let environmentValue = ProcessInfo.processInfo.environment["DASHSCOPE_API_KEY"]
+        let infoValue = Bundle.main.object(forInfoDictionaryKey: "ARK_API_KEY") as? String
+        let environmentValue = ProcessInfo.processInfo.environment["ARK_API_KEY"]
 
         return [infoValue, environmentValue]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -119,12 +119,12 @@ private enum QwenConfiguration {
     }
 }
 
-private enum QwenResponseParser {
+private enum DoubaoResponseParser {
     static func answerText(from data: Data) throws -> String {
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
 
         guard let choices = json?["choices"] as? [[String: Any]] else {
-            throw QwenChatError.missingAnswer
+            throw DoubaoChatError.missingAnswer
         }
 
         let textParts = choices.compactMap { choice -> String? in
@@ -137,14 +137,14 @@ private enum QwenResponseParser {
         let answer = textParts.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !answer.isEmpty else {
-            throw QwenChatError.missingAnswer
+            throw DoubaoChatError.missingAnswer
         }
 
         return answer
     }
 }
 
-private enum QwenChatError: LocalizedError {
+private enum DoubaoChatError: LocalizedError {
     case missingAPIKey
     case invalidResponse
     case missingAnswer
@@ -153,7 +153,7 @@ private enum QwenChatError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingAPIKey:
-            return "没有找到 DASHSCOPE_API_KEY，请在 Xcode Scheme 的环境变量或 Info.plist 对应配置里设置。"
+            return "没有找到 ARK_API_KEY，请在 Xcode Scheme 的环境变量或 Info.plist 对应配置里设置。"
         case .invalidResponse:
             return "服务端响应格式无效。"
         case .missingAnswer:

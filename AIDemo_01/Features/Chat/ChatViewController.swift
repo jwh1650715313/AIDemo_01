@@ -5,6 +5,7 @@ import SnapKit
 final class ChatViewController: UIViewController {
     private let onLogout: (() -> Void)?
     private let chatService: ChatResponding
+    private let voiceInputManager: VoiceInputManager
     private let chatView = ChatView()
     private let dimmingView = UIView()
     private let sidebarView = ChatSidebarView()
@@ -14,6 +15,7 @@ final class ChatViewController: UIViewController {
     private var previousNavigationBarHidden = true
     private var previousTabBarHidden = false
     private var isSidebarVisible = false
+    private weak var voiceInputPanel: VoiceInputPanelView?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -21,9 +23,11 @@ final class ChatViewController: UIViewController {
 
     init(
         chatService: ChatResponding,
+        voiceInputManager: VoiceInputManager? = nil,
         onLogout: (() -> Void)? = nil
     ) {
         self.chatService = chatService
+        self.voiceInputManager = voiceInputManager ?? VoiceInputManager.shared
         self.onLogout = onLogout
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,6 +100,7 @@ final class ChatViewController: UIViewController {
         chatView.inputBar.onSend = { [weak self] text in
             self?.sendUserMessage(text)
         }
+        chatView.inputBar.voiceButton.addTarget(self, action: #selector(voiceButtonTapped), for: .touchUpInside)
     }
 
     private func bindSidebarActions() {
@@ -195,6 +200,11 @@ final class ChatViewController: UIViewController {
                 }
             }
         }
+    }
+
+    private func sendMessage(text: String) {
+        // 语音输入和文字输入共用现有发送链路，避免新增一套聊天发送逻辑。
+        sendUserMessage(text)
     }
 
     private func appendAIReply(_ text: String) {
@@ -330,6 +340,43 @@ final class ChatViewController: UIViewController {
 
     @objc private func dimmingViewTapped() {
         hideSidebar()
+    }
+
+    @objc private func voiceButtonTapped() {
+        guard sendTask == nil else { return }
+        dismissKeyboard()
+
+        if isSidebarVisible {
+            hideSidebar { [weak self] in
+                self?.presentVoiceInputPanel()
+            }
+        } else {
+            presentVoiceInputPanel()
+        }
+    }
+
+    private func presentVoiceInputPanel() {
+        guard voiceInputPanel == nil else { return }
+
+        let panel = VoiceInputPanelView(voiceManager: voiceInputManager)
+        panel.onTextConfirmed = { [weak self] text in
+            // 本项目输入栏是 UITextField，语音最终文本先回填到同一处输入控件。
+            self?.chatView.inputBar.textField.text = text
+        }
+        panel.onSend = { [weak self] text in
+            guard let self else { return }
+            self.chatView.inputBar.textField.text = nil
+            self.sendMessage(text: text)
+        }
+        panel.onCancel = { [weak self] in
+            self?.voiceInputPanel = nil
+        }
+        panel.onDismiss = { [weak self] in
+            self?.voiceInputPanel = nil
+        }
+
+        voiceInputPanel = panel
+        panel.present(in: view)
     }
 }
 

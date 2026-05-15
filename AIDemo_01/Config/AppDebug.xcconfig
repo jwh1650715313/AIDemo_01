@@ -2,5 +2,5 @@
 // Put machine-local API keys there for Debug builds.
 #include? "LocalSecrets.xcconfig"
 
-DASHSCOPE_MODEL = qwen-plus
-DASHSCOPE_CHAT_COMPLETIONS_URL = https:/$()/dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+ARK_MODEL = doubao-seed-character-251128
+ARK_CHAT_COMPLETIONS_URL = https:/$()/ark.cn-beijing.volces.com/api/v3/chat/completions

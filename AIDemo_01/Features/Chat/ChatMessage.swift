@@ -62,7 +62,7 @@ extension ChatMessage {
             sender: .ai,
             text: """
             你好！我是灵境 AI。
-            现在已经接入千问 API，可以直接开始聊天。
+            现在已经接入豆包 API，可以直接开始聊天。
             """,
             time: "09:41"
         )
